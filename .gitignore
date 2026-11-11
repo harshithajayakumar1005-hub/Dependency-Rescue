@@ -1,0 +1,33 @@
+# Python bytecode & cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# Scratch & temporary development scripts
+scratch/
+*.log
+
+# Operating system files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+
+# IDE configurations
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Environment variables (API keys)
+.env
+
+# Local database files
+*.db
+*.sqlite
+*.sqlite3

@@ -1,0 +1,1705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dependency Rescue - Project Management & Delay Prediction System</title>
+  
+  <!-- Vis.js styling -->
+  <link rel="stylesheet" href="/static/css/vis-network.min.css">
+  <!-- Application styling -->
+  <link rel="stylesheet" href="/static/css/style.css">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="app-container">
+    <!-- Sidebar Navigation -->
+    <aside id="sidebar">
+      <div class="brand-section">
+        <div class="brand-logo-icon">DR</div>
+        <div>
+          <div class="brand-title">DEPENDENCY RESCUE</div>
+          <div class="brand-subtitle">Delay Prediction System</div>
+        </div>
+      </div>
+
+      <nav class="nav-menu">
+        <div class="nav-section-label">Core Operations</div>
+        <a class="nav-item active" data-view="dashboard">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+          Dashboard
+        </a>
+        <a class="nav-item" data-view="projects">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+          Projects
+          <span class="nav-badge" id="nav-project-count">1</span>
+        </a>
+        <a class="nav-item" data-view="tasks">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+          Task Management
+          <span class="nav-badge" id="nav-task-count">5</span>
+        </a>
+        <a class="nav-item" data-view="daily-updates">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          Daily Work Updates
+          <span class="nav-badge" id="nav-daily-badge" style="background: rgba(16, 185, 129, 0.2); color: #34d399;">Active</span>
+        </a>
+        <a class="nav-item" data-view="team-progress">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+          Team Progress Tracking
+        </a>
+
+        <div class="nav-section-label">Algorithms & AI Risk</div>
+        <a class="nav-item" data-view="dependencies">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"/></svg>
+          Dependency Analysis
+        </a>
+        <a class="nav-item" data-view="simulator">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          What-If Simulator
+        </a>
+        <a class="nav-item" data-view="ai-risk">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+          AI Risk Prediction
+          <span class="nav-badge" id="nav-ai-badge" style="background: rgba(139, 92, 246, 0.2); color: #c084fc;">ML</span>
+        </a>
+        <a class="nav-item" data-view="risk-recovery">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+          Risk & Recovery
+        </a>
+        <a class="nav-item" data-view="ai-recommendations">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+          AI Recommendations
+        </a>
+
+        <div class="nav-section-label">Team & Insights</div>
+        <a class="nav-item" data-view="workload">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+          Workload Analysis
+        </a>
+        <a class="nav-item" data-view="team-performance">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          Team Performance
+        </a>
+        <a class="nav-item" data-view="reports">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          History & Reports
+        </a>
+        <a class="nav-item" data-view="settings">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          Account & Settings
+        </a>
+      </nav>
+
+      <div class="sidebar-footer" style="display: flex; flex-direction: column; gap: 8px;">
+        <button id="load-sample-btn" class="sample-project-btn">
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+          Load Sample Project (5-Task)
+        </button>
+        <button id="load-complex-btn" class="sample-project-btn" style="background: rgba(59, 130, 246, 0.15); border-color: rgba(59, 130, 246, 0.4); color: #93c5fd;">
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+          Load Complex DAG (Parallel)
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main id="main-content">
+      <!-- Top Navbar -->
+      <header id="topbar">
+        <div class="topbar-left">
+          <div class="project-selector-wrapper">
+            <span class="project-selector-label">Active:</span>
+            <select id="active-project-select"></select>
+          </div>
+
+          <div class="user-session-wrapper">
+            <div id="topbar-user-avatar" class="avatar-circle" style="width: 24px; height: 24px; font-size: 10px; background: #8B5CF6; flex-shrink: 0;">AC</div>
+            <div style="display: flex; align-items: baseline; gap: 6px; white-space: nowrap;">
+              <span id="topbar-user-name" style="font-size: 12px; font-weight: 700; color: #fff;">Alex Chen</span>
+              <span id="topbar-user-role-badge" style="font-size: 10px; color: #34d399; font-weight: 600;">👑 Project Lead</span>
+            </div>
+            <button class="quick-action-btn btn-secondary" style="padding: 3px 8px; font-size: 10px; white-space: nowrap;" onclick="App.openAuthModal()">
+              Switch / Login
+            </button>
+            <select id="active-user-select" class="form-control" style="display: none;">
+              <option value="1">Alex Chen</option>
+              <option value="2">Sarah Connor</option>
+              <option value="3">David Miller</option>
+              <option value="4">Priya Sharma</option>
+              <option value="5">Marcus Vance</option>
+            </select>
+          </div>
+
+          <!-- Live Network Connectivity Pill -->
+          <span id="topbar-network-pill" class="badge" style="background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); font-size: 10px; padding: 4px 8px; display: inline-flex; align-items: center; gap: 5px; white-space: nowrap;">
+            <span id="topbar-network-dot" style="width: 6px; height: 6px; border-radius: 50%; background: #10b981;"></span>
+            <span id="topbar-network-text">Online</span>
+          </span>
+        </div>
+
+        <div class="topbar-right">
+          <button id="topbar-daily-update-btn" class="quick-action-btn" style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.35); color: #34d399;" onclick="App.openDailyUpdateModal()">
+            <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            + Daily Update
+          </button>
+          <button id="topbar-train-ai-btn" class="quick-action-btn" style="background: rgba(139, 92, 246, 0.15); border: 1px solid rgba(139, 92, 246, 0.35); color: #c084fc;" onclick="App.trainAIModel()">
+            <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            Train AI
+          </button>
+          <button id="topbar-new-task-btn" class="quick-action-btn btn-primary">
+            <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            New Task
+          </button>
+          <button id="topbar-simulate-btn" class="quick-action-btn btn-secondary">
+            <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            Simulate Delay
+          </button>
+          <button id="topbar-download-pdf-btn" class="quick-action-btn btn-secondary">
+            <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+            Download PDF
+          </button>
+        </div>
+      </header>
+
+      <!-- View Panels Container -->
+      <div id="view-container">
+
+        <!-- ==========================================
+             VIEW 1: DASHBOARD
+             ========================================== -->
+        <div id="view-dashboard" class="view-panel active">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title" style="display: flex; align-items: center; flex-wrap: wrap;">Executive Project Dashboard <span id="dashboard-active-project-pill" class="badge active-proj-pill" style="background: rgba(99, 102, 241, 0.2); border: 1px solid rgba(99, 102, 241, 0.4); color: #a5b4fc; font-size: 13px; font-weight: 600; padding: 4px 10px; border-radius: 6px; margin-left: 10px; vertical-align: middle;">Active Project</span></h1>
+              <p class="page-description" id="dashboard-project-desc">Live task dependencies, delay vulnerability indicators, and critical path performance metrics.</p>
+            </div>
+            <div style="display: flex; gap: 10px;">
+              <button class="quick-action-btn btn-secondary" onclick="App.switchView('simulator')">Run Delay Simulator</button>
+              <button class="quick-action-btn btn-primary" onclick="App.openTaskModal()">+ Add New Task</button>
+            </div>
+          </div>
+
+          <!-- Key Metrics Grid -->
+          <div class="stats-grid">
+            <div class="stat-card accent-blue">
+              <div class="stat-header">
+                <span class="stat-label">Total Projects</span>
+                <div class="stat-icon"><svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg></div>
+              </div>
+              <div class="stat-value" id="dash-total-projects">0</div>
+              <div class="stat-footer">Active workspace projects</div>
+            </div>
+
+            <div class="stat-card accent-purple">
+              <div class="stat-header">
+                <span class="stat-label">Total Tasks</span>
+                <div class="stat-icon"><svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/></svg></div>
+              </div>
+              <div class="stat-value" id="dash-total-tasks">0</div>
+              <div class="stat-footer" id="dash-tasks-footer">0 dependencies tracked</div>
+            </div>
+
+            <div class="stat-card accent-green">
+              <div class="stat-header">
+                <span class="stat-label">Completed Tasks</span>
+                <div class="stat-icon"><svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg></div>
+              </div>
+              <div class="stat-value" id="dash-completed-tasks">0</div>
+              <div class="stat-footer" id="dash-completion-rate">0% completion rate</div>
+            </div>
+
+            <div class="stat-card accent-blue">
+              <div class="stat-header">
+                <span class="stat-label">Pending Tasks</span>
+                <div class="stat-icon"><svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+              </div>
+              <div class="stat-value" id="dash-pending-tasks">0</div>
+              <div class="stat-footer">In progress or queued</div>
+            </div>
+
+            <div class="stat-card accent-red">
+              <div class="stat-header">
+                <span class="stat-label">Delayed Tasks</span>
+                <div class="stat-icon"><svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+              </div>
+              <div class="stat-value" id="dash-delayed-tasks">0</div>
+              <div class="stat-footer">Past target schedule</div>
+            </div>
+
+            <div class="stat-card accent-amber">
+              <div class="stat-header">
+                <span class="stat-label">Tasks at Risk</span>
+                <div class="stat-icon"><svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg></div>
+              </div>
+              <div class="stat-value" id="dash-risk-tasks">0</div>
+              <div class="stat-footer">Near zero float buffer</div>
+            </div>
+          </div>
+
+          <!-- Charts & Activities Grid -->
+          <div class="dashboard-grid">
+            <div style="display: flex; flex-direction: column; gap: 24px;">
+              <!-- Progress Chart Card -->
+              <div class="card">
+                <div class="card-header">
+                  <div class="card-title">Project Schedule & Critical Path Breakdown</div>
+                  <span id="dash-critical-path-summary" class="badge badge-critical-path">Calculating CPM...</span>
+                </div>
+                <div class="card-body">
+                  <div style="position: relative; height: 260px;">
+                    <canvas id="project-progress-chart"></canvas>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Upcoming Deadlines Card -->
+              <div class="card">
+                <div class="card-header">
+                  <div class="card-title">Upcoming Task Deadlines</div>
+                  <span class="badge badge-inprogress">Next 14 Days</span>
+                </div>
+                <div class="card-body" style="padding: 0;">
+                  <div class="table-wrapper">
+                    <table class="data-table">
+                      <thead>
+                        <tr>
+                          <th>Task Name</th>
+                          <th>Assignee</th>
+                          <th>Deadline</th>
+                          <th>Status</th>
+                          <th>Slack Buffer</th>
+                        </tr>
+                      </thead>
+                      <tbody id="dash-upcoming-deadlines-body">
+                        <tr><td colspan="5" style="text-align:center;">Loading task schedules...</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Column -->
+            <div style="display: flex; flex-direction: column; gap: 24px;">
+              <!-- Status Distribution Chart Card -->
+              <div class="card">
+                <div class="card-header">
+                  <div class="card-title">Task Status Distribution</div>
+                </div>
+                <div class="card-body">
+                  <div style="position: relative; height: 220px;">
+                    <canvas id="task-status-chart"></canvas>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Recent Activity Card -->
+              <div class="card">
+                <div class="card-header">
+                  <div class="card-title">Recent Activity Audit</div>
+                  <span class="badge badge-notstarted">Live Logs</span>
+                </div>
+                <div class="card-body" style="max-height: 280px; overflow-y: auto;">
+                  <div id="dash-activity-list" style="display: flex; flex-direction: column; gap: 12px;">
+                    <div style="color: var(--text-muted); font-size: 12px;">Loading system logs...</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==========================================
+             VIEW 2: PROJECTS
+             ========================================== -->
+        <div id="view-projects" class="view-panel">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title">Project Management</h1>
+              <p class="page-description">Create, manage, and configure multiple projects with baseline schedules and dependencies.</p>
+            </div>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+              <button class="quick-action-btn btn-secondary" id="projects-load-sample-btn">Load Sample (5-Task)</button>
+              <button class="quick-action-btn btn-secondary" id="projects-load-complex-btn">Load Complex (Parallel DAG)</button>
+              <button class="quick-action-btn btn-primary" onclick="App.openProjectModal()">+ Create New Project</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">All Workspace Projects</div>
+              <input type="text" id="project-search-input" class="form-control" placeholder="Search projects by name..." style="max-width: 280px;">
+            </div>
+            <div class="card-body" style="padding: 0;">
+              <div class="table-wrapper">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Project ID</th>
+                      <th>Project Name</th>
+                      <th>Timeline</th>
+                      <th>Status</th>
+                      <th>Tasks</th>
+                      <th>Completion</th>
+                      <th style="text-align: right;">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="projects-table-body">
+                    <tr><td colspan="7" style="text-align:center;">Loading projects...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==========================================
+             VIEW 3: TASK MANAGEMENT
+             ========================================== -->
+        <div id="view-tasks" class="view-panel">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title" style="display: flex; align-items: center; flex-wrap: wrap;">Task Management & CRUD <span id="tasks-active-project-pill" class="badge active-proj-pill" style="background: rgba(99, 102, 241, 0.2); border: 1px solid rgba(99, 102, 241, 0.4); color: #a5b4fc; font-size: 13px; font-weight: 600; padding: 4px 10px; border-radius: 6px; margin-left: 10px; vertical-align: middle;">Active Project</span></h1>
+              <p class="page-description">Maintain project tasks, durations, assignments, and enforce cycle-free dependencies.</p>
+            </div>
+            <button class="quick-action-btn btn-primary" onclick="App.openTaskModal()">+ Add New Task</button>
+          </div>
+
+          <!-- Filters Row -->
+          <div class="card" style="margin-bottom: 16px;">
+            <div class="card-body" style="padding: 14px 20px;">
+              <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr auto; gap: 12px; align-items: center;">
+                <input type="text" id="task-search-input" class="form-control" placeholder="Search tasks by name or description...">
+                <select id="task-filter-status" class="form-control">
+                  <option value="">All Statuses</option>
+                  <option value="Not Started">Not Started</option>
+                  <option value="In Progress">In Progress</option>
+                  <option value="Completed">Completed</option>
+                  <option value="Delayed">Delayed</option>
+                  <option value="At Risk">At Risk</option>
+                </select>
+                <select id="task-filter-priority" class="form-control">
+                  <option value="">All Priorities</option>
+                  <option value="Critical">Critical</option>
+                  <option value="High">High</option>
+                  <option value="Medium">Medium</option>
+                  <option value="Low">Low</option>
+                </select>
+                <select id="task-filter-assignee" class="form-control">
+                  <option value="">All Assignees</option>
+                </select>
+                <button class="quick-action-btn btn-secondary" onclick="App.resetTaskFilters()">Reset</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Role-Based Privacy Banner -->
+          <div id="task-privacy-banner" style="margin-bottom: 16px; padding: 12px 16px; border-radius: 8px; font-size: 13px; display: flex; align-items: center; justify-content: space-between; background: rgba(99, 102, 241, 0.15); border: 1px solid rgba(99, 102, 241, 0.35); color: #c7d2fe;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span id="task-privacy-icon" style="font-size: 16px;">👑</span>
+              <span id="task-privacy-text"><b>Project Lead Access:</b> Full workspace visibility enabled. You can view, assign, and manage all tasks across the entire team.</span>
+            </div>
+            <button class="quick-action-btn btn-secondary" style="padding: 3px 10px; font-size: 11px;" onclick="App.openAuthModal()">Switch Persona</button>
+          </div>
+
+          <!-- Tasks Table -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Tasks List (<span id="task-table-count">0</span>)</div>
+            </div>
+            <div class="card-body" style="padding: 0;">
+              <div class="table-wrapper">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Task Name</th>
+                      <th>Duration</th>
+                      <th>Dates</th>
+                      <th>Predecessors</th>
+                      <th>Status</th>
+                      <th>Priority</th>
+                      <th>Assignee</th>
+                      <th style="text-align: right;">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tasks-table-body">
+                    <tr><td colspan="9" style="text-align:center;">Loading tasks...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==========================================
+             VIEW 4: DEPENDENCY ANALYSIS
+             ========================================== -->
+        <div id="view-dependencies" class="view-panel">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title" style="display: flex; align-items: center; flex-wrap: wrap;">Dependency Analysis & Directed Graph <span id="dep-active-project-pill" class="badge active-proj-pill" style="background: rgba(99, 102, 241, 0.2); border: 1px solid rgba(99, 102, 241, 0.4); color: #a5b4fc; font-size: 13px; font-weight: 600; padding: 4px 10px; border-radius: 6px; margin-left: 10px; vertical-align: middle;">Active Project</span></h1>
+              <p class="page-description">Interactive Directed Acyclic Graph (DAG) visualizing predecessors, BFS direct/indirect downstream impacts, and DFS paths.</p>
+            </div>
+            <div style="display: flex; gap: 10px;">
+              <button class="quick-action-btn btn-secondary" id="dep-add-dependency-btn">+ Add Dependency Edge</button>
+              <button class="quick-action-btn btn-secondary" id="dep-fit-graph-btn">Fit View</button>
+              <button class="quick-action-btn btn-primary" id="dep-toggle-layout-btn">Toggle Layout (Tree/Physics)</button>
+            </div>
+          </div>
+
+          <!-- Graph Viewport Card -->
+          <div class="graph-viewport-card card">
+            <div class="graph-toolbar">
+              <div class="graph-tools-group">
+                <span style="font-size: 12px; font-weight: 600; color: var(--text-muted);">SELECT NODE TO ANALYZE:</span>
+                <select id="dep-task-selector" class="form-control" style="width: 220px; padding: 4px 10px; font-size: 12px;"></select>
+                <button id="dep-analyze-btn" class="quick-action-btn btn-primary" style="padding: 5px 12px; font-size: 11px;">Run BFS / DFS</button>
+              </div>
+
+              <div class="graph-legend">
+                <div class="legend-pill"><span class="legend-color-dot" style="background:#10b981;"></span> Completed</div>
+                <div class="legend-pill"><span class="legend-color-dot" style="background:#3b82f6;"></span> In Progress</div>
+                <div class="legend-pill"><span class="legend-color-dot" style="background:#ef4444;"></span> Delayed</div>
+                <div class="legend-pill"><span class="legend-color-dot" style="background:#f59e0b;"></span> At Risk</div>
+                <div class="legend-pill"><span class="legend-color-dot" style="background:#64748b;"></span> Not Started</div>
+                <div class="legend-pill"><span class="legend-color-dot" style="background:#f43f5e; box-shadow: 0 0 6px #f43f5e;"></span> Critical Path (Float = 0)</div>
+              </div>
+            </div>
+
+            <div id="network-graph-canvas"></div>
+          </div>
+
+          <!-- Dependency Traversal Details (BFS / DFS Results) -->
+          <div class="dashboard-grid">
+            <!-- BFS Downstream Impact Card -->
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">
+                  <span id="bfs-target-task-name">BFS Downstream Impact Analysis</span>
+                </div>
+                <span class="badge badge-inprogress" id="bfs-total-badge">Select a task above</span>
+              </div>
+              <div class="card-body">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+                  <div style="background: rgba(15, 23, 42, 0.5); padding: 14px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+                    <div style="font-size: 11px; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Direct Dependent Tasks (Level 1)</div>
+                    <div id="bfs-direct-count" style="font-size: 22px; font-weight: 800; color: #60a5fa; margin: 4px 0;">0</div>
+                    <div style="font-size: 12px; color: var(--text-secondary);">Directly depend on this task</div>
+                    <div id="bfs-direct-list" style="margin-top: 10px; display: flex; flex-direction: column; gap: 6px;"></div>
+                  </div>
+
+                  <div style="background: rgba(15, 23, 42, 0.5); padding: 14px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+                    <div style="font-size: 11px; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Indirect Dependent Tasks (Level 2+)</div>
+                    <div id="bfs-indirect-count" style="font-size: 22px; font-weight: 800; color: #c084fc; margin: 4px 0;">0</div>
+                    <div style="font-size: 12px; color: var(--text-secondary);">Propagated downstream ripple effect</div>
+                    <div id="bfs-indirect-list" style="margin-top: 10px; display: flex; flex-direction: column; gap: 6px;"></div>
+                  </div>
+                </div>
+
+                <div id="bfs-levels-breakdown">
+                  <div style="font-size: 12px; color: var(--text-muted);">Level-by-level BFS hierarchy will appear here.</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- DFS Complete Dependency Chains & Manage Edges -->
+            <div style="display: flex; flex-direction: column; gap: 24px;">
+              <div class="card">
+                <div class="card-header">
+                  <div class="card-title">DFS Complete Dependency Chains</div>
+                  <span class="badge badge-completed" id="dfs-chain-count">0 Chains</span>
+                </div>
+                <div class="card-body" style="max-height: 240px; overflow-y: auto;">
+                  <div id="dfs-chains-container" style="display: flex; flex-direction: column; gap: 8px;">
+                    <div style="font-size: 12px; color: var(--text-muted);">Run DFS analysis on a task to view its end-to-end paths.</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Dependencies List in Active Project -->
+              <div class="card">
+                <div class="card-header">
+                  <div class="card-title">Active Dependency Edges (<span id="dep-edge-count">0</span>)</div>
+                </div>
+                <div class="card-body" style="max-height: 200px; overflow-y: auto; padding: 0;">
+                  <div class="table-wrapper">
+                    <table class="data-table">
+                      <thead>
+                        <tr>
+                          <th>Predecessor</th>
+                          <th>Successor</th>
+                          <th style="text-align: right;">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody id="dep-edges-table-body">
+                        <tr><td colspan="3" style="text-align:center;">Loading dependencies...</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==========================================
+             VIEW 5: WHAT-IF DELAY SIMULATOR
+             ========================================== -->
+        <div id="view-simulator" class="view-panel">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title" style="display: flex; align-items: center; flex-wrap: wrap;">What-If Delay Simulator <span id="sim-active-project-pill" class="badge active-proj-pill" style="background: rgba(99, 102, 241, 0.2); border: 1px solid rgba(99, 102, 241, 0.4); color: #a5b4fc; font-size: 13px; font-weight: 600; padding: 4px 10px; border-radius: 6px; margin-left: 10px; vertical-align: middle;">Active Project</span></h1>
+              <p class="page-description">Simulate hypothetical task delays and audit downstream ripple effects without mutating original database dates.</p>
+            </div>
+          </div>
+
+          <!-- Simulator Control Panel -->
+          <div class="simulator-panel">
+            <h2 style="font-size: 16px; font-weight: 700; color: #c4b5fd; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+              <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+              Hypothetical Delay Simulation Engine
+            </h2>
+
+            <div class="simulator-form-grid">
+              <div class="form-group">
+                <label class="form-label">1. Select Target Task to Delay</label>
+                <select id="sim-task-select" class="form-control"></select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">2. Hypothetical Delay Duration (Days)</label>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <input type="number" id="sim-delay-input" class="form-control" min="1" max="60" value="3" style="width: 100px;">
+                  <input type="range" id="sim-delay-slider" min="1" max="30" value="3" style="flex: 1; accent-color: var(--accent-purple);">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Options</label>
+                <label style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-secondary); cursor: pointer; padding-top: 8px;">
+                  <input type="checkbox" id="sim-save-history" checked style="accent-color: var(--primary);">
+                  Save to audit history
+                </label>
+              </div>
+
+              <div style="display: flex; gap: 8px;">
+                <button id="sim-run-btn" class="quick-action-btn btn-primary" style="padding: 10px 20px;">
+                  Simulate Delay
+                </button>
+                <button id="sim-reset-btn" class="quick-action-btn btn-secondary">
+                  Reset
+                </button>
+              </div>
+            </div>
+
+            <!-- Simulation Summary Banner -->
+            <div id="sim-impact-banner" class="sim-impact-banner safe" style="display: none;">
+              <div>
+                <div style="font-size: 11px; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; opacity: 0.8;" id="sim-banner-subtitle">SIMULATION RESULT</div>
+                <div style="font-size: 18px; font-weight: 800; margin-top: 4px;" id="sim-banner-title">Project completion delayed by +0 days</div>
+              </div>
+              <div style="display: flex; gap: 20px; align-items: center;">
+                <div>
+                  <div style="font-size: 11px; color: var(--text-muted);">Revised Finish</div>
+                  <div style="font-size: 14px; font-weight: 700;" id="sim-banner-finish">N/A</div>
+                </div>
+                <div>
+                  <div style="font-size: 11px; color: var(--text-muted);">Deadline Status</div>
+                  <div style="font-size: 14px; font-weight: 700;" id="sim-banner-deadline-status">On Track</div>
+                </div>
+                <div>
+                  <div style="font-size: 11px; color: var(--text-muted);">Downstream Tasks Affected</div>
+                  <div style="font-size: 14px; font-weight: 700;" id="sim-banner-affected-count">0 tasks</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Schedule Comparison & Breakdown Grid -->
+          <div class="card" id="sim-results-card" style="display: none;">
+            <div class="card-header">
+              <div class="card-title">Baseline vs. Simulated Schedule Comparison</div>
+              <div style="display: flex; gap: 14px; font-size: 12px;">
+                <span style="display: flex; align-items: center; gap: 6px;"><span style="width: 10px; height: 10px; background: #3b82f6; border-radius: 2px;"></span> Baseline</span>
+                <span style="display: flex; align-items: center; gap: 6px;"><span style="width: 10px; height: 10px; background: #ef4444; border-radius: 2px;"></span> Simulated (+Delay)</span>
+              </div>
+            </div>
+            <div class="card-body" style="padding: 0;">
+              <div class="table-wrapper">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Task Name</th>
+                      <th>Impact Type</th>
+                      <th>Baseline Schedule</th>
+                      <th>Simulated Schedule</th>
+                      <th>Slip (Days)</th>
+                      <th>Visual Comparison</th>
+                    </tr>
+                  </thead>
+                  <tbody id="sim-comparison-table-body"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mini Simulator Graph Container -->
+          <div class="card" id="sim-graph-card" style="display: none;">
+            <div class="card-header">
+              <div class="card-title">Simulated Propagation Graph (Affected Downstream Paths)</div>
+              <div style="display: flex; gap: 14px; align-items: center; flex-wrap: wrap;">
+                <div class="graph-legend" style="font-size: 11px;">
+                  <div class="legend-pill"><span class="legend-color-dot" style="background:#ef4444;"></span> Trigger</div>
+                  <div class="legend-pill"><span class="legend-color-dot" style="background:#f59e0b;"></span> Direct Slip</div>
+                  <div class="legend-pill"><span class="legend-color-dot" style="background:#8b5cf6;"></span> Indirect Propagated</div>
+                  <div class="legend-pill"><span class="legend-color-dot" style="background:#334155;"></span> Unaffected</div>
+                </div>
+                <button class="quick-action-btn btn-secondary" style="padding: 4px 10px; font-size: 11px;" onclick="App.fitSimulatorGraph()">Center View</button>
+              </div>
+            </div>
+            <div class="card-body" style="padding: 0;">
+              <div id="simulator-graph-canvas" style="height: 240px;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==========================================
+             VIEW 6: RISK & RECOVERY
+             ========================================== -->
+        <div id="view-risk-recovery" class="view-panel">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title" style="display: flex; align-items: center; flex-wrap: wrap;">Deadline Risk & Recovery Strategies <span id="risk-active-project-pill" class="badge active-proj-pill" style="background: rgba(99, 102, 241, 0.2); border: 1px solid rgba(99, 102, 241, 0.4); color: #a5b4fc; font-size: 13px; font-weight: 600; padding: 4px 10px; border-radius: 6px; margin-left: 10px; vertical-align: middle;">Active Project</span></h1>
+              <p class="page-description">Automated schedule risk audit, critical path vulnerability indicators, and mathematical recovery actions.</p>
+            </div>
+            <button class="quick-action-btn btn-secondary" onclick="App.loadRiskRecovery()">Refresh Analysis</button>
+          </div>
+
+          <!-- Risk Level Banner -->
+          <div id="risk-banner-card" class="risk-banner risk-low" style="flex-direction: column; align-items: stretch; gap: 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+              <div>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <span class="badge" id="risk-level-badge" style="font-size: 12px; padding: 4px 12px;">LOW RISK</span>
+                  <span style="font-size: 13px; color: var(--text-muted);" id="risk-score-text">Risk Score: 15 / 100</span>
+                </div>
+                <div style="font-size: 15px; font-weight: 700; margin-top: 8px;" id="risk-explanation-text">
+                  Project is operating within acceptable buffers with no immediate critical path blockers.
+                </div>
+              </div>
+              <div style="display: flex; gap: 24px; text-align: right;">
+                <div>
+                  <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase;">Deadline Buffer</div>
+                  <div style="font-size: 20px; font-weight: 800;" id="risk-slack-days">0 Days</div>
+                </div>
+                <div>
+                  <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase;">Overdue Tasks</div>
+                  <div style="font-size: 20px; font-weight: 800; color: #ef4444;" id="risk-overdue-count">0</div>
+                </div>
+                <div>
+                  <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase;">Critical Tasks</div>
+                  <div style="font-size: 20px; font-weight: 800; color: #fb7185;" id="risk-critical-count">0</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Risk Calculation & Underlying Reasons Breakdown -->
+            <div id="risk-reasons-breakdown" style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 12px 16px;">
+              <div style="font-size: 12px; font-weight: 700; color: #93c5fd; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                Primary Contributing Reasons for this Risk Prediction:
+              </div>
+              <div id="risk-reasons-list" style="display: flex; flex-direction: column; gap: 6px; font-size: 12px; color: var(--text-secondary);">
+                <!-- Populated dynamically by App.loadRiskRecovery() -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Risk Factors Table -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Identified Schedule Vulnerabilities & Why They Matter</div>
+            </div>
+            <div class="card-body" style="padding: 0;">
+              <div class="table-wrapper">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Factor</th>
+                      <th>Severity</th>
+                      <th>Detailed Assessment & Impact</th>
+                    </tr>
+                  </thead>
+                  <tbody id="risk-factors-table-body">
+                    <tr><td colspan="3" style="text-align: center;">Calculating schedule vulnerabilities...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recovery Suggestions Section -->
+          <div style="margin-top: 30px;">
+            <div class="page-header" style="margin-bottom: 16px;">
+              <div>
+                <h2 style="font-size: 18px; font-weight: 700; color: var(--text-primary);">Intelligent Schedule Recovery Suggestions</h2>
+                <p class="page-description">Actionable strategies generated from CPM float and dependency analysis to recover delayed days.</p>
+              </div>
+            </div>
+
+            <div class="recovery-grid" id="recovery-suggestions-container">
+              <div style="color: var(--text-muted); font-size: 13px;">Analyzing recovery paths...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==========================================
+             VIEW 7: WORKLOAD ANALYSIS
+             ========================================== -->
+        <div id="view-workload" class="view-panel">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title" style="display: flex; align-items: center; flex-wrap: wrap;">Team Workload & Capacity Analysis <span id="workload-active-project-pill" class="badge active-proj-pill" style="background: rgba(99, 102, 241, 0.2); border: 1px solid rgba(99, 102, 241, 0.4); color: #a5b4fc; font-size: 13px; font-weight: 600; padding: 4px 10px; border-radius: 6px; margin-left: 10px; vertical-align: middle;">Active Project</span></h1>
+              <p class="page-description">Balance project assignments across team members to prevent single-point dependency bottlenecks.</p>
+            </div>
+            <button class="quick-action-btn btn-primary" onclick="App.openTeamModal()">+ Add Team Member</button>
+          </div>
+
+          <!-- Workload Distribution Chart Card -->
+          <div class="dashboard-grid" style="margin-bottom: 24px;">
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">Workload Distribution (Total Task Days per Member)</div>
+              </div>
+              <div class="card-body">
+                <div style="position: relative; height: 260px;">
+                  <canvas id="workload-chart"></canvas>
+                </div>
+              </div>
+            </div>
+
+            <!-- Overload Alert Card -->
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">Capacity & Bottleneck Monitor</div>
+              </div>
+              <div class="card-body">
+                <div id="workload-alert-container">
+                  <div style="font-size: 13px; color: var(--text-secondary);">Analyzing team capacity...</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Team Members Table -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Team Members & Assignment Allocation</div>
+            </div>
+            <div class="card-body" style="padding: 0;">
+              <div class="table-wrapper">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Team Member</th>
+                      <th>Role</th>
+                      <th>Assigned Tasks</th>
+                      <th>Completed</th>
+                      <th>Pending</th>
+                      <th>Estimated Workload (Days)</th>
+                      <th>Capacity Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="workload-table-body">
+                    <tr><td colspan="7" style="text-align: center;">Loading team workload...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==========================================
+             VIEW 8: HISTORY & REPORTS
+             ========================================== -->
+        <div id="view-reports" class="view-panel">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title">Simulation History & Audit Reports</h1>
+              <p class="page-description">Download comprehensive 8-section executive PDF reports and audit past hypothetical delay scenarios.</p>
+            </div>
+            <button class="quick-action-btn btn-primary" onclick="App.downloadPDFReport()">
+              <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+              Download Executive PDF Report
+            </button>
+          </div>
+
+          <!-- Simulation History Table -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Past Delay Simulations History</div>
+            </div>
+            <div class="card-body" style="padding: 0;">
+              <div class="table-wrapper">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Simulation Time</th>
+                      <th>Project</th>
+                      <th>Target Task</th>
+                      <th>Delay Added</th>
+                      <th>Affected Tasks</th>
+                      <th>Project Slip</th>
+                      <th>Deadline Status</th>
+                      <th style="text-align: right;">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="sim-history-table-body">
+                    <tr><td colspan="8" style="text-align: center;">Loading simulation history...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==========================================
+             VIEW 9: ACCOUNT & SETTINGS
+             ========================================== -->
+        <div id="view-settings" class="view-panel">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title">Account & System Configuration</h1>
+              <p class="page-description">System preferences, algorithm parameters, and database management.</p>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">System & Database Controls</div>
+              </div>
+              <div class="card-body" style="display: flex; flex-direction: column; gap: 16px;">
+                <div>
+                  <h3 style="font-size: 14px; font-weight: 700; margin-bottom: 4px;">Reset Database & Reload Sample Project</h3>
+                  <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">Restores the original clean 5-task "Software Development Project" with team members and baseline dependencies.</p>
+                  <button id="system-reset-db-btn" class="quick-action-btn btn-danger">Reset System Database</button>
+                </div>
+                <hr style="border: 0; border-top: 1px solid var(--border-color);">
+                <div>
+                  <h3 style="font-size: 14px; font-weight: 700; margin-bottom: 4px;">Active Workspace Storage</h3>
+                  <p style="font-size: 12px; color: var(--text-muted);">Database: SQLite 3 (Persistent in project root: <code>dependency_rescue.db</code>)</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">Dependency Rescue Algorithms Guide</div>
+              </div>
+              <div class="card-body" style="font-size: 13px; line-height: 1.6; color: var(--text-secondary); display: flex; flex-direction: column; gap: 10px;">
+                <div><b style="color: #fff;">1. Directed Graph:</b> Tasks are nodes, dependencies are directed edges $u \rightarrow v$ representing finish-to-start constraints.</div>
+                <div><b style="color: #fff;">2. BFS (Breadth-First Search):</b> Discovers direct dependent tasks at Level 1 and indirect dependent downstream tasks at Level 2+.</div>
+                <div><b style="color: #fff;">3. DFS (Depth-First Search):</b> Traverses complete downstream chains and detects circular dependency back-edges.</div>
+                <div><b style="color: #fff;">4. CPM (Critical Path Method):</b> Computes Earliest Start (ES), Earliest Finish (EF), Latest Start (LS), Latest Finish (LF), and Total Float = $LS - ES$. Tasks with Total Float = 0 define the Critical Path.</div>
+                <div><b style="color: #fff;">5. Delay Propagation Engine:</b> Propagates hypothetical delay days across successors topologically without mutating saved database records.</div>
+                <div><b style="color: #fff;">6. AI Risk Engine:</b> 11-feature Scikit-Learn Random Forest classifier + rule baseline predicting task delay probabilities, downstream BFS cascades, and autonomous recovery recommendations.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==========================================
+             VIEW 10: DAILY WORK UPDATES
+             ========================================== -->
+        <div id="view-daily-updates" class="view-panel">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title" style="display: flex; align-items: center; flex-wrap: wrap;">Daily Team Work Updates <span id="daily-active-project-pill" class="badge active-proj-pill" style="background: rgba(99, 102, 241, 0.2); border: 1px solid rgba(99, 102, 241, 0.4); color: #a5b4fc; font-size: 13px; font-weight: 600; padding: 4px 10px; border-radius: 6px; margin-left: 10px; vertical-align: middle;">Active Project</span></h1>
+              <p class="page-description">Daily progress submissions, blocker notifications, and stagnant task monitoring.</p>
+            </div>
+            <div style="display: flex; gap: 10px;">
+              <button class="quick-action-btn btn-secondary" onclick="App.loadDailyUpdates()">Refresh Feed</button>
+              <button class="quick-action-btn btn-primary" onclick="App.openDailyUpdateModal()">+ Submit Daily Update</button>
+            </div>
+          </div>
+
+          <!-- Role-Based Privacy Banner -->
+          <div id="daily-privacy-banner" style="margin-bottom: 20px; padding: 12px 16px; border-radius: 8px; font-size: 13px; display: flex; align-items: center; justify-content: space-between; background: rgba(99, 102, 241, 0.15); border: 1px solid rgba(99, 102, 241, 0.35); color: #c7d2fe;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span id="daily-privacy-icon" style="font-size: 16px;">👑</span>
+              <span id="daily-privacy-text"><b>Project Lead Access:</b> Full workspace visibility. Reviewing daily standups and blocker reports across all 5 team members.</span>
+            </div>
+            <button class="quick-action-btn btn-secondary" style="padding: 3px 10px; font-size: 11px;" onclick="App.openAuthModal()">Switch Persona</button>
+          </div>
+
+          <!-- Daily Updates KPI Grid -->
+          <div class="stats-grid" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 24px;">
+            <div class="stat-card accent-green">
+              <div class="stat-header">
+                <span class="stat-label">Today's Reports</span>
+                <div class="stat-icon"><svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+              </div>
+              <div class="stat-value" id="daily-kpi-submitted">0</div>
+              <div class="stat-footer" id="daily-kpi-compliance">100% compliance today</div>
+            </div>
+
+            <div class="stat-card accent-blue">
+              <div class="stat-header">
+                <span class="stat-label">Pending Members</span>
+                <div class="stat-icon"><svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+              </div>
+              <div class="stat-value" id="daily-kpi-pending">0</div>
+              <div class="stat-footer">Awaiting daily submission</div>
+            </div>
+
+            <div class="stat-card accent-amber">
+              <div class="stat-header">
+                <span class="stat-label">Stagnant Tasks</span>
+                <div class="stat-icon"><svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg></div>
+              </div>
+              <div class="stat-value" id="daily-kpi-stagnant">0</div>
+              <div class="stat-footer">No updates in ≥ 3 days</div>
+            </div>
+
+            <div class="stat-card accent-purple">
+              <div class="stat-header">
+                <span class="stat-label">Weekly Activity</span>
+                <div class="stat-icon"><svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg></div>
+              </div>
+              <div class="stat-value" id="daily-kpi-weekly-total">0</div>
+              <div class="stat-footer">Reports in past 7 days</div>
+            </div>
+          </div>
+
+          <!-- Pending Members Alert (Conditional) -->
+          <div id="daily-pending-banner" class="alert-box" style="display: none; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: var(--radius-md); padding: 14px 18px; margin-bottom: 24px;">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#f59e0b"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                <span style="font-size: 13px; color: #fbbf24;" id="daily-pending-text">Pending reports from team members.</span>
+              </div>
+              <button class="quick-action-btn btn-secondary" style="font-size: 11px; padding: 4px 10px;" onclick="App.openDailyUpdateModal()">Submit Report Now</button>
+            </div>
+          </div>
+
+          <!-- Updates Feed & Activity Table -->
+          <div class="card">
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+              <div class="card-title">Daily Work Submissions Feed</div>
+              <div style="display: flex; gap: 10px;">
+                <input type="date" id="daily-filter-date" class="form-control" style="font-size: 12px; height: 32px; width: 140px;">
+                <select id="daily-filter-member" class="form-control" style="font-size: 12px; height: 32px; width: 160px;">
+                  <option value="">All Team Members</option>
+                </select>
+              </div>
+            </div>
+            <div class="card-body" style="padding: 0;">
+              <div class="table-responsive">
+                <table class="data-table" id="daily-updates-table">
+                  <thead>
+                    <tr>
+                      <th style="width: 140px;">Date & Member</th>
+                      <th style="width: 180px;">Task</th>
+                      <th>Today's Progress & Deliverables</th>
+                      <th style="width: 110px;">Verified %</th>
+                      <th style="width: 220px;">Roadblocks / Issues</th>
+                      <th style="width: 100px;">Est. Left</th>
+                    </tr>
+                  </thead>
+                  <tbody id="daily-updates-tbody">
+                    <tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 30px;">Loading updates...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==========================================
+             VIEW 11: TEAM PROGRESS TRACKING
+             ========================================== -->
+        <div id="view-team-progress" class="view-panel">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title" style="display: flex; align-items: center; flex-wrap: wrap;">Automatic Progress Tracking <span id="progress-active-project-pill" class="badge active-proj-pill" style="background: rgba(99, 102, 241, 0.2); border: 1px solid rgba(99, 102, 241, 0.4); color: #a5b4fc; font-size: 13px; font-weight: 600; padding: 4px 10px; border-radius: 6px; margin-left: 10px; vertical-align: middle;">Active Project</span></h1>
+              <p class="page-description">Duration-weighted progress analytics, lifecycle state verification, and audit history.</p>
+            </div>
+            <div style="display: flex; gap: 10px;">
+              <button class="quick-action-btn btn-primary" onclick="App.openTaskProgressModal(null)">+ Log Task Progress</button>
+            </div>
+          </div>
+
+          <!-- Progress Overview Cards -->
+          <div class="stats-grid" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 24px;">
+            <div class="stat-card accent-blue">
+              <div class="stat-header">
+                <span class="stat-label">Weighted Progress</span>
+                <div class="stat-icon"><svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg></div>
+              </div>
+              <div class="stat-value" id="prog-metric-overall">0%</div>
+              <div class="stat-footer">Duration-weighted total</div>
+            </div>
+
+            <div class="stat-card accent-purple">
+              <div class="stat-header">
+                <span class="stat-label">Expected Progress</span>
+                <div class="stat-icon"><svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg></div>
+              </div>
+              <div class="stat-value" id="prog-metric-expected">0%</div>
+              <div class="stat-footer" id="prog-metric-variance">0% variance</div>
+            </div>
+
+            <div class="stat-card accent-green">
+              <div class="stat-header">
+                <span class="stat-label">Time Logged</span>
+                <div class="stat-icon"><svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+              </div>
+              <div class="stat-value" id="prog-metric-hours">0h</div>
+              <div class="stat-footer" id="prog-metric-planned-hours">of 0h planned</div>
+            </div>
+
+            <div class="stat-card accent-amber">
+              <div class="stat-header">
+                <span class="stat-label">Completed Tasks</span>
+                <div class="stat-icon"><svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg></div>
+              </div>
+              <div class="stat-value" id="prog-metric-completed">0 / 0</div>
+              <div class="stat-footer" id="prog-metric-breakdown">0 in progress</div>
+            </div>
+          </div>
+
+          <!-- Task Progress Detail Table -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Task Verification & Lifecycle Matrix</div>
+            </div>
+            <div class="card-body" style="padding: 0;">
+              <div class="table-responsive">
+                <table class="data-table" id="team-progress-table">
+                  <thead>
+                    <tr>
+                      <th>Task Name</th>
+                      <th>Assignee</th>
+                      <th>Status</th>
+                      <th style="width: 220px;">Progress</th>
+                      <th>Time Spent</th>
+                      <th>Actual Window</th>
+                      <th style="width: 140px; text-align: right;">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="team-progress-tbody">
+                    <tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 30px;">Loading progress...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==========================================
+             VIEW 12: AI RISK PREDICTION
+             ========================================== -->
+        <div id="view-ai-risk" class="view-panel">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title" style="display: flex; align-items: center; flex-wrap: wrap;">AI Project Risk & Delay Prediction <span id="ai-active-project-pill" class="badge active-proj-pill" style="background: rgba(99, 102, 241, 0.2); border: 1px solid rgba(99, 102, 241, 0.4); color: #a5b4fc; font-size: 13px; font-weight: 600; padding: 4px 10px; border-radius: 6px; margin-left: 10px; vertical-align: middle;">Active Project</span></h1>
+              <p class="page-description">Machine learning Random Forest delay classification with downstream graph propagation.</p>
+            </div>
+            <div style="display: flex; gap: 10px;">
+              <button class="quick-action-btn btn-secondary" onclick="App.loadAIRisk()">Re-run AI Analysis</button>
+              <button class="quick-action-btn btn-primary" onclick="App.trainAIModel()">Train Scikit-Learn ML Model</button>
+            </div>
+          </div>
+
+          <!-- ML Model Status Banner -->
+          <div class="card" style="margin-bottom: 24px; background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(99, 102, 241, 0.15) 100%); border-color: rgba(99, 102, 241, 0.3);">
+            <div class="card-body" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+              <div style="display: flex; align-items: center; gap: 16px;">
+                <div style="width: 48px; height: 48px; border-radius: 12px; background: rgba(99, 102, 241, 0.2); display: flex; align-items: center; justify-content: center; color: #818cf8;">
+                  <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+                </div>
+                <div>
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <h3 style="font-size: 16px; font-weight: 700; margin: 0;" id="ai-model-name-banner">Scikit-Learn Random Forest (100 Trees)</h3>
+                    <span id="ai-model-status-pill" class="badge badge-success" style="font-size: 11px;">Trained (93.8% Accuracy)</span>
+                  </div>
+                  <p style="font-size: 12px; color: var(--text-secondary); margin: 4px 0 0 0;" id="ai-model-meta-info">Evaluating 11 project indicators including critical path float, historical stagnation, and blocker logs.</p>
+                </div>
+              </div>
+
+              <div style="display: flex; gap: 24px; align-items: center;">
+                <div style="text-align: right;">
+                  <div style="font-size: 11px; text-transform: uppercase; color: var(--text-muted);">Overall Project Risk</div>
+                  <div style="font-size: 20px; font-weight: 800;" id="ai-overall-risk-badge">HIGH RISK</div>
+                </div>
+                <div style="text-align: right;">
+                  <div style="font-size: 11px; text-transform: uppercase; color: var(--text-muted);">Delay Probability</div>
+                  <div style="font-size: 20px; font-weight: 800; color: #f59e0b;" id="ai-overall-prob">57.1%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- High Risk Tasks Table -->
+          <div class="card" style="margin-bottom: 24px;">
+            <div class="card-header">
+              <div class="card-title">AI Delay Risk Analysis per Task</div>
+            </div>
+            <div class="card-body" style="padding: 0;">
+              <div class="table-responsive">
+                <table class="data-table" id="ai-risk-table">
+                  <thead>
+                    <tr>
+                      <th>Task Name</th>
+                      <th>Assignee</th>
+                      <th style="width: 140px;">Delay Prob</th>
+                      <th style="width: 110px;">Risk Tier</th>
+                      <th>Downstream Cascade</th>
+                      <th>Predicted Delivery</th>
+                      <th>Primary Risk Indicators</th>
+                    </tr>
+                  </thead>
+                  <tbody id="ai-risk-tbody">
+                    <tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 30px;">Evaluating project risk factors...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==========================================
+             VIEW 13: TEAM PERFORMANCE
+             ========================================== -->
+        <div id="view-team-performance" class="view-panel">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title" style="display: flex; align-items: center; flex-wrap: wrap;">Team Performance & Accountability <span id="perf-active-project-pill" class="badge active-proj-pill" style="background: rgba(99, 102, 241, 0.2); border: 1px solid rgba(99, 102, 241, 0.4); color: #a5b4fc; font-size: 13px; font-weight: 600; padding: 4px 10px; border-radius: 6px; margin-left: 10px; vertical-align: middle;">Active Project</span></h1>
+              <p class="page-description">Task velocity, submission compliance rate, and workload balance across contributors.</p>
+            </div>
+            <button class="quick-action-btn btn-secondary" onclick="App.loadTeamPerformance()">Refresh Metrics</button>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Team Member Performance Scorecard</div>
+            </div>
+            <div class="card-body" style="padding: 0;">
+              <div class="table-responsive">
+                <table class="data-table" id="team-perf-table">
+                  <thead>
+                    <tr>
+                      <th>Member</th>
+                      <th>Role & Level</th>
+                      <th>Assigned Tasks</th>
+                      <th>Completed</th>
+                      <th>Hours Logged</th>
+                      <th>Update Compliance</th>
+                      <th>Workload Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="team-perf-tbody">
+                    <tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 30px;">Loading performance data...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==========================================
+             VIEW 14: AI RECOMMENDATIONS
+             ========================================== -->
+        <div id="view-ai-recommendations" class="view-panel">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title" style="display: flex; align-items: center; flex-wrap: wrap;">AI Recovery & Optimization Recommendations <span id="recom-active-project-pill" class="badge active-proj-pill" style="background: rgba(99, 102, 241, 0.2); border: 1px solid rgba(99, 102, 241, 0.4); color: #a5b4fc; font-size: 13px; font-weight: 600; padding: 4px 10px; border-radius: 6px; margin-left: 10px; vertical-align: middle;">Active Project</span></h1>
+              <p class="page-description">Autonomous actionable suggestions to crash schedules, resolve bottlenecks, and mitigate delay risks.</p>
+            </div>
+            <div style="display: flex; gap: 10px;">
+              <button class="quick-action-btn btn-secondary" onclick="App.openAIConfigModal()">Configure Cloud AI</button>
+              <button class="quick-action-btn btn-primary" onclick="App.loadAIRecommendations()">Recompute Advice</button>
+            </div>
+          </div>
+
+          <!-- Executive AI Advisory Banner Card (Dual-Mode: Cloud LLM or Local Heuristic) -->
+          <div class="card" style="margin-bottom: 24px; background: linear-gradient(135deg, rgba(30, 41, 59, 0.85) 0%, rgba(99, 102, 241, 0.18) 100%); border: 1px solid rgba(99, 102, 241, 0.4);">
+            <div class="card-body">
+              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 12px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <div style="width: 38px; height: 38px; border-radius: 10px; background: rgba(99, 102, 241, 0.25); display: flex; align-items: center; justify-content: center; color: #818cf8;">
+                    <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                  </div>
+                  <div>
+                    <h3 style="font-size: 15px; font-weight: 700; margin: 0; color: #fff;">Executive AI Advisory & Natural Guidance</h3>
+                    <div style="font-size: 11px; color: var(--text-muted);" id="ai-advisory-provider-label">Engine: Evaluating project state...</div>
+                  </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span id="ai-advisory-mode-badge" class="badge" style="background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); font-size: 11px; padding: 4px 10px;">
+                    Offline Mode Active
+                  </span>
+                  <button class="quick-action-btn btn-secondary" style="padding: 4px 10px; font-size: 11px;" onclick="App.openAIConfigModal()">API Key Settings</button>
+                </div>
+              </div>
+
+              <div id="ai-advisory-text" style="font-size: 13px; line-height: 1.6; color: #f1f5f9; background: rgba(15, 23, 42, 0.65); border-radius: 8px; padding: 14px 18px; border-left: 4px solid #6366f1;">
+                Generating synthesized executive advisory...
+              </div>
+            </div>
+          </div>
+
+          <div id="ai-recommendations-list" style="display: flex; flex-direction: column; gap: 16px;">
+            <!-- Generated dynamically -->
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ==========================================
+       MODALS
+       ========================================== -->
+
+  <!-- Project Modal (Create/Edit) -->
+  <div id="project-modal" class="modal-backdrop">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title" id="project-modal-title">Create New Project</h3>
+        <button class="modal-close-btn" onclick="App.closeProjectModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="proj-form-id">
+        <div class="form-group">
+          <label class="form-label">Project Name *</label>
+          <input type="text" id="proj-form-name" class="form-control" placeholder="e.g. NextGen Web Portal" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description</label>
+          <textarea id="proj-form-desc" class="form-control" rows="3" placeholder="Brief project summary..."></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Start Date *</label>
+            <input type="date" id="proj-form-start" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Target Deadline *</label>
+            <input type="date" id="proj-form-deadline" class="form-control" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Project Status</label>
+          <select id="proj-form-status" class="form-control">
+            <option value="Active">Active</option>
+            <option value="On Track">On Track</option>
+            <option value="At Risk">At Risk</option>
+            <option value="Delayed">Delayed</option>
+            <option value="Completed">Completed</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="quick-action-btn btn-secondary" onclick="App.closeProjectModal()">Cancel</button>
+        <button id="project-modal-save-btn" class="quick-action-btn btn-primary" onclick="App.saveProject()">Save Project</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Task Modal (Create/Edit) -->
+  <div id="task-modal" class="modal-backdrop">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title" id="task-modal-title">Add New Task</h3>
+        <button class="modal-close-btn" onclick="App.closeTaskModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="task-form-id">
+        <div class="form-group">
+          <label class="form-label">Task Name *</label>
+          <input type="text" id="task-form-name" class="form-control" placeholder="e.g. Database Architecture Setup" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description</label>
+          <textarea id="task-form-desc" class="form-control" rows="2" placeholder="Task deliverables & specifications..."></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Duration (Working Days) *</label>
+            <input type="number" id="task-form-duration" class="form-control" min="1" value="3" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Assignee</label>
+            <select id="task-form-assignee" class="form-control"></select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Start Date *</label>
+            <input type="date" id="task-form-start" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Deadline *</label>
+            <input type="date" id="task-form-deadline" class="form-control" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Status</label>
+            <select id="task-form-status" class="form-control">
+              <option value="Not Started">Not Started</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Completed">Completed</option>
+              <option value="Delayed">Delayed</option>
+              <option value="At Risk">At Risk</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Priority</label>
+            <select id="task-form-priority" class="form-control">
+              <option value="Low">Low</option>
+              <option value="Medium" selected>Medium</option>
+              <option value="High">High</option>
+              <option value="Critical">Critical</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Dependencies (Select Predecessor Tasks that must complete before this starts)</label>
+          <div id="task-form-dependencies-container" style="max-height: 140px; overflow-y: auto; background: var(--bg-input); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 10px; display: flex; flex-direction: column; gap: 6px;">
+            <div style="font-size: 12px; color: var(--text-muted);">No predecessor tasks available.</div>
+          </div>
+          <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">* System automatically verifies and rejects any circular dependency loops.</div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="quick-action-btn btn-secondary" onclick="App.closeTaskModal()">Cancel</button>
+        <button id="task-modal-save-btn" class="quick-action-btn btn-primary" onclick="App.saveTask()">Save Task</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Dependency Modal -->
+  <div id="dependency-modal" class="modal-backdrop">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title">Establish Task Dependency Edge</h3>
+        <button class="modal-close-btn" onclick="App.closeDependencyModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px;">
+          Define a Finish-to-Start dependency edge: <b>Predecessor</b> must finish before <b>Successor</b> can start.
+        </p>
+        <div class="form-group">
+          <label class="form-label">Predecessor Task (Must Finish First)</label>
+          <select id="dep-form-predecessor" class="form-control"></select>
+        </div>
+        <div style="text-align: center; color: var(--accent-purple); font-weight: 800; font-size: 18px;">↓</div>
+        <div class="form-group">
+          <label class="form-label">Successor Task (Cannot Start Until Predecessor Finishes)</label>
+          <select id="dep-form-successor" class="form-control"></select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="quick-action-btn btn-secondary" onclick="App.closeDependencyModal()">Cancel</button>
+        <button class="quick-action-btn btn-primary" onclick="App.saveDependency()">Create Dependency</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Team Member Modal -->
+  <div id="team-modal" class="modal-backdrop">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title">Add Team Contributor</h3>
+        <button class="modal-close-btn" onclick="App.closeTeamModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Full Name *</label>
+          <input type="text" id="team-form-name" class="form-control" placeholder="e.g. Jordan Hayes" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Role / Specialization *</label>
+          <input type="text" id="team-form-role" class="form-control" placeholder="e.g. Backend Engineer / DevOps" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input type="email" id="team-form-email" class="form-control" placeholder="jordan.h@rescue.dev">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Avatar Accent Color</label>
+          <select id="team-form-color" class="form-control">
+            <option value="#6366F1">Indigo (#6366F1)</option>
+            <option value="#8B5CF6">Purple (#8B5CF6)</option>
+            <option value="#EC4899">Pink (#EC4899)</option>
+            <option value="#3B82F6">Blue (#3B82F6)</option>
+            <option value="#10B981">Emerald (#10B981)</option>
+            <option value="#F59E0B">Amber (#F59E0B)</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="quick-action-btn btn-secondary" onclick="App.closeTeamModal()">Cancel</button>
+        <button class="quick-action-btn btn-primary" onclick="App.saveTeamMember()">Add Contributor</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Daily Work Update Modal -->
+  <div id="daily-update-modal" class="modal-backdrop">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title">Submit Daily Work Update</h3>
+        <button class="modal-close-btn" onclick="App.closeDailyUpdateModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Team Member *</label>
+            <select id="daily-form-member" class="form-control" required></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Task Worked On *</label>
+            <select id="daily-form-task" class="form-control" required></select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Today's Work Completed & Deliverables *</label>
+          <textarea id="daily-form-work" class="form-control" rows="3" placeholder="Describe concrete work accomplished today..." required></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Verified Progress (% Complete) *</label>
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <input type="range" id="daily-form-progress-range" min="0" max="100" value="50" style="flex: 1;" oninput="document.getElementById('daily-form-progress').value = this.value">
+              <input type="number" id="daily-form-progress" class="form-control" min="0" max="100" value="50" style="width: 75px;" oninput="document.getElementById('daily-form-progress-range').value = this.value">
+              <span style="font-weight: 700; color: var(--text-secondary);">%</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Estimated Days Remaining *</label>
+            <input type="number" id="daily-form-remaining-days" class="form-control" min="0" value="1" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Remaining Work Description</label>
+          <input type="text" id="daily-form-remaining-work" class="form-control" placeholder="What is left to reach 100% completion?">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Roadblocks / Problems Faced (Optional)</label>
+          <input type="text" id="daily-form-problems" class="form-control" placeholder="e.g. Blocked by API credentials or waiting on third-party approval">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Report Date</label>
+          <input type="date" id="daily-form-date" class="form-control">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="quick-action-btn btn-secondary" onclick="App.closeDailyUpdateModal()">Cancel</button>
+        <button class="quick-action-btn btn-primary" onclick="App.submitDailyUpdate()">Submit Daily Report</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Task Progress Direct Update Modal -->
+  <div id="task-progress-modal" class="modal-backdrop">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title">Record Task Progress & Hours</h3>
+        <button class="modal-close-btn" onclick="App.closeTaskProgressModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="prog-modal-task-id">
+        <div class="form-group">
+          <label class="form-label">Select Task</label>
+          <select id="prog-modal-task-select" class="form-control" onchange="App.onProgressModalTaskChange()"></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Verified Progress Percentage</label>
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <input type="range" id="prog-modal-range" min="0" max="100" value="0" style="flex: 1;" oninput="document.getElementById('prog-modal-val').value = this.value">
+            <input type="number" id="prog-modal-val" class="form-control" min="0" max="100" value="0" style="width: 75px;" oninput="document.getElementById('prog-modal-range').value = this.value">
+            <span style="font-weight: 700; color: var(--text-secondary);">%</span>
+          </div>
+          <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Setting to 100% automatically sets status to 'Completed' and stamps actual completion date.</div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Status</label>
+            <select id="prog-modal-status" class="form-control">
+              <option value="Not Started">Not Started</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Completed">Completed</option>
+              <option value="Delayed">Delayed</option>
+              <option value="At Risk">At Risk</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Hours Spent Today</label>
+            <input type="number" id="prog-modal-hours" class="form-control" min="0" step="0.5" value="4.0">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Progress Notes / Comments</label>
+          <textarea id="prog-modal-comments" class="form-control" rows="2" placeholder="Summary of progress achieved..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="quick-action-btn btn-secondary" onclick="App.closeTaskProgressModal()">Cancel</button>
+        <button class="quick-action-btn btn-primary" onclick="App.saveTaskProgress()">Save Verified Progress</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cloud AI Config Modal -->
+  <div id="ai-config-modal" class="modal-backdrop">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title">Configure Generative AI (Cloud or Offline)</h3>
+        <button class="modal-close-btn" onclick="App.closeAIConfigModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;">
+          Enable external Generative AI (Google Gemini or OpenAI) to generate natural, conversational advice. If left empty or offline, the system safely uses local deterministic heuristic rules.
+        </p>
+        <div class="form-group">
+          <label class="form-label">AI Provider</label>
+          <select id="ai-config-provider" class="form-control">
+            <option value="gemini">Google Gemini (Gemini 1.5 Flash)</option>
+            <option value="openai">OpenAI (ChatGPT / GPT-4o-mini)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">API Key</label>
+          <input type="password" id="ai-config-key" class="form-control" placeholder="Enter API Key (leave empty for 100% offline mode)">
+          <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;" id="ai-config-key-hint">
+            No API key currently saved. The system is operating in Offline Local Mode.
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="quick-action-btn btn-secondary" onclick="App.clearAIKey()">Clear / Use Offline Mode</button>
+        <button class="quick-action-btn btn-primary" onclick="App.saveAIConfig()">Save Configuration</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Authentication & Character Profile Modal -->
+  <div id="auth-modal" class="modal-backdrop">
+    <div class="modal-dialog" style="max-width: 540px;">
+      <div class="modal-header">
+        <h3 class="modal-title" id="auth-modal-title">Workspace Authentication & Role Management</h3>
+        <button class="modal-close-btn" onclick="App.closeAuthModal()">✕</button>
+      </div>
+      <div class="modal-body" style="padding-top: 10px;">
+        <!-- Tabs -->
+        <div style="display: flex; gap: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 18px; padding-bottom: 8px;">
+          <button id="auth-tab-login" class="quick-action-btn btn-primary" style="padding: 6px 14px; font-size: 12px;" onclick="App.switchAuthTab('login')">Log In</button>
+          <button id="auth-tab-register" class="quick-action-btn btn-secondary" style="padding: 6px 14px; font-size: 12px;" onclick="App.switchAuthTab('register')">Create Character / Register</button>
+        </div>
+
+        <!-- Login Pane -->
+        <div id="auth-pane-login">
+          <div class="form-group">
+            <label class="form-label">Username</label>
+            <input type="text" id="auth-login-username" class="form-control" placeholder="e.g. alex or sarah">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <input type="password" id="auth-login-password" class="form-control" placeholder="Enter password (e.g. alex123 or sarah123)">
+          </div>
+          <button class="quick-action-btn btn-primary" style="width: 100%; justify-content: center; padding: 10px; margin-top: 8px;" onclick="App.submitLogin()">
+            Authenticate & Log In
+          </button>
+
+          <!-- 1-Click Fast Evaluator Quick Login -->
+          <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.08);">
+            <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 700; margin-bottom: 10px;">
+              ⚡ 1-Click Quick Login (Evaluator & Demo Personas):
+            </div>
+            <div id="auth-quick-accounts-list" style="display: flex; flex-direction: column; gap: 8px;">
+              <!-- Populated dynamically with Alex, Sarah, David, Priya, Marcus -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Register Pane -->
+        <div id="auth-pane-register" style="display: none;">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Full Name *</label>
+              <input type="text" id="auth-reg-fullname" class="form-control" placeholder="e.g. Robert Martin" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Username *</label>
+              <input type="text" id="auth-reg-username" class="form-control" placeholder="e.g. uncle_bob" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password *</label>
+            <input type="password" id="auth-reg-password" class="form-control" placeholder="Choose a secure password" required>
+          </div>
+
+          <div style="margin-top: 14px; margin-bottom: 8px; font-size: 12px; font-weight: 700; color: #93c5fd;">
+            Configure Characters for Each Project:
+          </div>
+          <div class="form-group">
+            <label class="form-label">Project #1 Role (Software Dev):</label>
+            <select id="auth-reg-role-1" class="form-control">
+              <option value="Developer" data-lead="0">Team Member (Developer) - Private Access</option>
+              <option value="UI/UX Designer" data-lead="0">Team Member (UI/UX) - Private Access</option>
+              <option value="QA Engineer" data-lead="0">Team Member (QA) - Private Access</option>
+              <option value="Project Lead" data-lead="1">Project Lead - Full Workspace Access</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Project #2 Role (Enterprise Cloud):</label>
+            <select id="auth-reg-role-2" class="form-control">
+              <option value="Cloud Engineer" data-lead="0">Team Member (Cloud) - Private Access</option>
+              <option value="Backend Architect" data-lead="0">Team Member (Backend) - Private Access</option>
+              <option value="Project Lead" data-lead="1">Project Lead - Full Workspace Access</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Project #3 Role (AI Mobile App):</label>
+            <select id="auth-reg-role-3" class="form-control">
+              <option value="ML Engineer" data-lead="0">Team Member (ML Engineer) - Private Access</option>
+              <option value="Flutter Specialist" data-lead="0">Team Member (Flutter) - Private Access</option>
+              <option value="Project Lead" data-lead="1">Project Lead - Full Workspace Access</option>
+            </select>
+          </div>
+
+          <button class="quick-action-btn btn-primary" style="width: 100%; justify-content: center; padding: 10px; margin-top: 8px;" onclick="App.submitRegister()">
+            Register Account & Save Roles
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification Toasts Container -->
+  <div id="toast-container"></div>
+
+  <!-- Scripts -->
+  <script src="/static/libs/vis-network.min.js"></script>
+  <script src="/static/libs/chart.umd.min.js"></script>
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
+
